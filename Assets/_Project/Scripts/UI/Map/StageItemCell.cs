@@ -79,7 +79,11 @@ namespace NATMP.UI.Map
             if (_imgLock != null)
                 _imgLock.gameObject.SetActive(!isUnlocked);
             if (_imgLineV != null)
-                _imgLineV.gameObject.SetActive(IsVerticalLine(stage));
+                _imgLineV.gameObject.SetActive(IsEnableVerticalLine(stage));
+            if (_imgLineH != null)
+            {
+                _imgLineH.gameObject.SetActive(!IsDisableHorizontalLine(stage));
+            }
 
             ApplyStars(isUnlocked ? stage.StarCount : 0);
 
@@ -117,9 +121,14 @@ namespace NATMP.UI.Map
             SceneManager.LoadScene(ProjectScenes.Gameplay);
         }
 
-        private bool IsVerticalLine(StageData stage)
+        private bool IsEnableVerticalLine(StageData stage)
         {
             return (stage.StageIndex % 4) == 0;
+        }
+        private bool IsDisableHorizontalLine(StageData stage)
+        {
+            int m = stage.StageIndex % 8;
+            return m == 4 || m == 5;
         }
 
         private void ApplyStars(int starCount)

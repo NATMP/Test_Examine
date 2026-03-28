@@ -52,9 +52,6 @@ namespace NATMP.Gameplay.Maze
         public static MazeGenerationParameters DefaultClassic => new(10, 13, 0.35f, 10, 30);
     }
 
-    /// <summary>
-    /// Hạt deterministic khi không có mazeSeed trong save (migration / Play scene đơn lẻ).
-    /// </summary>
     public static class MazeGameplaySeed
     {
         public static int DeterministicFromStageIndex(int stageIndex) => unchecked(stageIndex * 73856093 ^ 19349663);

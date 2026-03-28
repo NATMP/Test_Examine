@@ -3,15 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using NATMP;
 using NATMP.Gameplay.Maze;
-using NATMP.Utilities.GamePlaySystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InGameMazeController : MonoBehaviour
 {
-    /// <summary>Ô bắt đầu bên trong tường biên (hàng/cột 1 và W/H là tường).</summary>
-    private static readonly Vector2Int BugStart = new(2, 2);
+    /// <summary>Mặc định project: ô bug trong biên (2,2). Có thể override qua <see cref="MazeStageEntry"/>.</summary>
+    private static readonly Vector2Int DefaultBugStart = new(2, 2);
 
     [Header("Hierarchy")]
     [SerializeField] private Transform mazeRoot;
@@ -31,6 +30,8 @@ public class InGameMazeController : MonoBehaviour
 
     [Header("Maze generation")]
     [SerializeField] private MazeGenerationConfig mazeGenerationConfig;
+    [Tooltip("Roster nội dung maze (seed / manual). Để trống = mỗi stage dùng seed deterministic theo index.")]
+    [SerializeField] private MazeStageRoster mazeStageRoster;
     [Tooltip("Dùng khi Play trực tiếp GameplayScene hoặc không có stage từ map.")]
     [SerializeField] private int fallbackStageIndexForDirectPlay = 1;
 
@@ -42,12 +43,16 @@ public class InGameMazeController : MonoBehaviour
     private int _mazeWidth;
     private int _mazeHeight;
     private int _activeStageIndex = 1;
-    private int _activeMazeSeed;
+    private int _activeStageContentSeed;
     private int _targetPlacementSessionSalt;
+
+    private Vector2Int _bugStartCell = DefaultBugStart;
+    private bool _hasFixedTarget;
+    private Vector2Int _fixedTargetCell;
 
     private bool[,] walkable;
     private Vector2Int targetCell;
-    private Vector2Int currentBugCell = BugStart;
+    private Vector2Int currentBugCell = DefaultBugStart;
 
     private Transform bugTransform;
     private Transform targetTransform;
@@ -57,6 +62,7 @@ public class InGameMazeController : MonoBehaviour
     private readonly List<Vector2Int> _pickMeetsMinScratch = new();
     private readonly List<Vector2Int> _pickLongestScratch = new();
     private int[,] _shortestPathCellScratch;
+    private Queue<Vector2Int> _shortestPathBfsQueue;
 
     private readonly List<GameObject> _wallPool = new();
 
@@ -92,6 +98,7 @@ public class InGameMazeController : MonoBehaviour
         _mazeWidth = _genParams.Width;
         _mazeHeight = _genParams.Height;
         _shortestPathCellScratch = new int[_mazeWidth + 1, _mazeHeight + 1];
+        _shortestPathBfsQueue = new Queue<Vector2Int>(Mathf.Max(16, _mazeWidth * _mazeHeight / 4));
 
         var gc = GameController.Instance;
         int pending = gc != null ? gc.PendingGameplayStageIndex : -1;
@@ -123,7 +130,7 @@ public class InGameMazeController : MonoBehaviour
         lastPath.Clear();
         ClearHint();
 
-        currentBugCell = BugStart;
+        currentBugCell = _bugStartCell;
         if (bugTransform != null)
             bugTransform.position = CellToWorld(currentBugCell);
     }
@@ -140,29 +147,18 @@ public class InGameMazeController : MonoBehaviour
         ClearHint();
 
         _activeStageIndex = Mathf.Max(1, newStageIndex);
-        _activeMazeSeed = ResolveSavedMazeSeed(_activeStageIndex);
-        if (_activeMazeSeed == 0)
-            _activeMazeSeed = MazeGameplaySeed.DeterministicFromStageIndex(_activeStageIndex);
 
         _targetPlacementSessionSalt = UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 
-        walkable = InGameMazeMazeGenerator.Generate(_genParams, BugStart, _activeMazeSeed);
+        var resolved = MazeStageContentResolver.Resolve(mazeStageRoster, _activeStageIndex, _genParams);
+        walkable = resolved.Walkable;
+        _activeStageContentSeed = resolved.ContentSeed;
+        _bugStartCell = resolved.BugStart;
+        _hasFixedTarget = resolved.HasFixedTarget;
+        _fixedTargetCell = resolved.FixedTarget;
+
         RebuildMazeVisual();
         SpawnBugAndTarget();
-    }
-
-    private static int ResolveSavedMazeSeed(int stageIndex)
-    {
-        var gc = GameController.Instance;
-        if (gc == null || gc.DataController == null)
-            return 0;
-
-        gc.DataController.Initialize();
-        var playerData = gc.DataController.GetData<PlayerDataJson>();
-        if (playerData == null)
-            return 0;
-
-        return playerData.MapLevelData.TryGetStage(stageIndex, out var stage) ? stage.MazeSeed : 0;
     }
 
     private void RebuildMazeVisual()
@@ -235,10 +231,10 @@ public class InGameMazeController : MonoBehaviour
         targetTransform = targetGo.transform;
         targetTransform.localScale = Vector3.one * (cellSize / 1f);
 
-        currentBugCell = BugStart;
+        currentBugCell = _bugStartCell;
         bugTransform.position = CellToWorld(currentBugCell);
 
-        targetCell = PickRandomTargetCell();
+        targetCell = _hasFixedTarget ? _fixedTargetCell : PickRandomTargetCell();
         targetTransform.position = CellToWorld(targetCell);
     }
 
@@ -254,12 +250,12 @@ public class InGameMazeController : MonoBehaviour
     /// </summary>
     private Vector2Int PickRandomTargetCell()
     {
-        int rngSeed = HashCode.Combine(_activeMazeSeed, _targetPlacementSessionSalt);
+        int rngSeed = HashCode.Combine(_activeStageContentSeed, _targetPlacementSessionSalt);
         var rng = new System.Random(rngSeed);
         int minCellsOnShortestPath = _genParams.MinPathLength;
 
         InGameMazeGridPathFinder.FillShortestPathCellCounts(
-            walkable, BugStart, _mazeWidth, _mazeHeight, _shortestPathCellScratch);
+            walkable, _bugStartCell, _mazeWidth, _mazeHeight, _shortestPathCellScratch, _shortestPathBfsQueue);
 
         _pickMeetsMinScratch.Clear();
         _pickLongestScratch.Clear();
@@ -272,7 +268,7 @@ public class InGameMazeController : MonoBehaviour
         {
             if (!walkable[x, y])
                 continue;
-            if (x == BugStart.x && y == BugStart.y)
+            if (x == _bugStartCell.x && y == _bugStartCell.y)
                 continue;
 
             int cellsOnPath = _shortestPathCellScratch[x, y];

@@ -7,7 +7,7 @@ public static class InGameMazeMazeGenerator
     /// <summary>
     /// Toàn bộ biên ma trận (x=1, x=width, y=1, y=height) luôn là tường — khớp maze có khung kín.
     /// </summary>
-    private static void StampPerimeterWalls(bool[,] walkable, int width, int height)
+    public static void StampPerimeterWalls(bool[,] walkable, int width, int height)
     {
         for (int x = 1; x <= width; x++)
         {
@@ -20,6 +20,16 @@ public static class InGameMazeMazeGenerator
             walkable[1, y] = false;
             walkable[width, y] = false;
         }
+    }
+
+    /// <summary>Ô xuất phát bug luôn là sàn (sau StampPerimeter hoặc chỉnh tay lưới).</summary>
+    public static void EnsureBugCellWalkable(bool[,] walkable, int width, int height, Vector2Int bugStart)
+    {
+        if (walkable == null)
+            return;
+        if (bugStart.x < 1 || bugStart.x > width || bugStart.y < 1 || bugStart.y > height)
+            return;
+        walkable[bugStart.x, bugStart.y] = true;
     }
 
     /// <summary>
@@ -55,17 +65,27 @@ public static class InGameMazeMazeGenerator
         int height,
         Vector2Int bugStart,
         double wallChance,
-        System.Random rng)
+        System.Random rng,
+        int[,] visitStamp,
+        ref int visitStampGeneration,
+        Queue<Vector2Int> bfsQueue)
     {
         var order = BuildInteriorCellsShuffled(width, height, bugStart, rng);
+        int totalWalkable = InGameMazeGridPathFinder.CountWalkableCells(walkable, width, height);
         foreach (var c in order)
         {
             if (rng.NextDouble() >= wallChance)
                 continue;
+            if (!walkable[c.x, c.y])
+                continue;
 
             walkable[c.x, c.y] = false;
-            if (!InGameMazeGridPathFinder.AllWalkableCellsReachableFrom(walkable, bugStart, width, height))
+            int reachable = InGameMazeGridPathFinder.CountReachableWalkableCells(
+                walkable, bugStart, width, height, visitStamp, ref visitStampGeneration, bfsQueue);
+            if (reachable != totalWalkable - 1)
                 walkable[c.x, c.y] = true;
+            else
+                totalWalkable--;
         }
     }
 
@@ -80,6 +100,9 @@ public static class InGameMazeMazeGenerator
         int maxAttempts = parameters.MaxGenerationAttempts;
 
         var farInnerCorner = new Vector2Int(width - 1, height - 1);
+        var visitStamp = new int[width + 1, height + 1];
+        var bfsQueue = new Queue<Vector2Int>(Mathf.Max(32, (width - 2) * (height - 2) + 4));
+        int visitStampGeneration = 0;
 
         int attempts = 0;
         while (true)
@@ -93,7 +116,9 @@ public static class InGameMazeMazeGenerator
             StampPerimeterWalls(walkable, width, height);
             walkable[bugStart.x, bugStart.y] = true;
 
-            PlaceInteriorWallsPreservingConnectivity(walkable, width, height, bugStart, wallChance, rng);
+            PlaceInteriorWallsPreservingConnectivity(
+                walkable, width, height, bugStart, wallChance, rng, visitStamp, ref visitStampGeneration, bfsQueue);
+            EnsureBugCellWalkable(walkable, width, height, bugStart);
 
             if (InGameMazeGridPathFinder.TryFindPath(walkable, bugStart, farInnerCorner, width, height, out var testPath)
                 && testPath != null
@@ -108,7 +133,7 @@ public static class InGameMazeMazeGenerator
                     for (int y = 1; y <= height; y++)
                         walkable[x, y] = true;
                 StampPerimeterWalls(walkable, width, height);
-                walkable[bugStart.x, bugStart.y] = true;
+                EnsureBugCellWalkable(walkable, width, height, bugStart);
                 break;
             }
         }
