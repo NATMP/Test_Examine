@@ -1,0 +1,143 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Gameplay2D_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 1
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 47
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    - serializedVersion: 4
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 1
+      enableAlphaDilation: 1
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: c3540e2f498371d4eb114bbfedaaba61, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - b126c050985e01c429ee64493f306784: -7802094100818305955
+    - dc867e11c4684704b8943319fab16cad: -6776840922496469145
+    - 39dbf424a7f23a243befcdec06aa9c94: 5785446675052572476
+    - ab4989247b422d94e83f4e7fd9e7a670: 8043091600683127539
+    - 20c8aed54ec9fff498dcd69d8e618c91: 5789515468742889264
+    - 177c75f50bee648419a05bf52e3f1fa6: 7447564641099839686
+    - 0aea2996e7c7be04c9568af84f0d2ed9: -1707587314993253093
+    - d9188f1714f235b4f90ad47f15da287e: 7589161069233774310
+    - 596a1897459269d4884bd91287300f8c: -7092171214414297812
+    - 7d5e4e59924ed984c81f650e34b42f09: -964055490484588473
+    - e0112ac962d60814ab9b8e084ec88ca9: -2656715373006768463
+    - 803c75d9a8186a44db351abcf9503196: -4978791685090834501
+    - a378d64a89f599246af7c649936cec2c: 5582744596591044223
+    - 3f20ad8ac1800094797718cd48476825: 309664375713419813
+    - c0e9e6ba511e9af46bfbefedf7808cb5: -3765455856502711871
+    - 72c31a1b6b57fad4ba7e9bc5a31d6210: 8601295146896742308
+    - aef4957bf0959db40a8e1659994456db: 7857557785589156361
+    - 86831d5c4afa25d4bacb34b7d71bd542: -3987600637831375772
+    - 6ad7fb9c48ae89b4599a2d7bea235692: -1371688077652994428
+    - 58e5490d14a10bb4f82f00a4352c5d0b: -4770342626513601428
+    - fa61e22dec1c8034fbedd0ad239f37a4: -2653867176190271948
+    - c50f099db148fd84fbb994083d3ad733: 6156819779538500029
+    - a652191e102430b46ac1ca8d7a58f0fd: -7443756053782179069
+    - 7d4853df4cffa4c47bb0a8dedb34b252: -2671245110766956269
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: -7802094100818305955, guid: b126c050985e01c429ee64493f306784, type: 3}
+  - {fileID: -6776840922496469145, guid: dc867e11c4684704b8943319fab16cad, type: 3}
+  - {fileID: 5785446675052572476, guid: 39dbf424a7f23a243befcdec06aa9c94, type: 3}
+  - {fileID: 8043091600683127539, guid: ab4989247b422d94e83f4e7fd9e7a670, type: 3}
+  - {fileID: 5789515468742889264, guid: 20c8aed54ec9fff498dcd69d8e618c91, type: 3}
+  - {fileID: 7447564641099839686, guid: 177c75f50bee648419a05bf52e3f1fa6, type: 3}
+  - {fileID: -1707587314993253093, guid: 0aea2996e7c7be04c9568af84f0d2ed9, type: 3}
+  - {fileID: 7589161069233774310, guid: d9188f1714f235b4f90ad47f15da287e, type: 3}
+  - {fileID: -7092171214414297812, guid: 596a1897459269d4884bd91287300f8c, type: 3}
+  - {fileID: -964055490484588473, guid: 7d5e4e59924ed984c81f650e34b42f09, type: 3}
+  - {fileID: -2656715373006768463, guid: e0112ac962d60814ab9b8e084ec88ca9, type: 3}
+  - {fileID: -4978791685090834501, guid: 803c75d9a8186a44db351abcf9503196, type: 3}
+  - {fileID: 5582744596591044223, guid: a378d64a89f599246af7c649936cec2c, type: 3}
+  - {fileID: 309664375713419813, guid: 3f20ad8ac1800094797718cd48476825, type: 3}
+  - {fileID: -3765455856502711871, guid: c0e9e6ba511e9af46bfbefedf7808cb5, type: 3}
+  - {fileID: 8601295146896742308, guid: 72c31a1b6b57fad4ba7e9bc5a31d6210, type: 3}
+  - {fileID: 7857557785589156361, guid: aef4957bf0959db40a8e1659994456db, type: 3}
+  - {fileID: -3987600637831375772, guid: 86831d5c4afa25d4bacb34b7d71bd542, type: 3}
+  - {fileID: -1371688077652994428, guid: 6ad7fb9c48ae89b4599a2d7bea235692, type: 3}
+  - {fileID: -4770342626513601428, guid: 58e5490d14a10bb4f82f00a4352c5d0b, type: 3}
+  - {fileID: -2653867176190271948, guid: fa61e22dec1c8034fbedd0ad239f37a4, type: 3}
+  - {fileID: 6156819779538500029, guid: c50f099db148fd84fbb994083d3ad733, type: 3}
+  - {fileID: -7443756053782179069, guid: a652191e102430b46ac1ca8d7a58f0fd, type: 3}
+  - {fileID: -2671245110766956269, guid: 7d4853df4cffa4c47bb0a8dedb34b252, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - gate_r001_0
+  - gate_r003_0
+  - 2p_bug_0
+  - auto_0
+  - gate_b003_0
+  - gate_b000_0
+  - gate_r002_0
+  - gate_r006_0
+  - gate_r005_0
+  - 1p_bug_0
+  - ui_lens_0
+  - gate_b005_0
+  - gate_r004_0
+  - gate_b001_0
+  - gate_r007_0
+  - button_menu_0
+  - gate_b006_0
+  - gate_b002_0
+  - button_retry_0
+  - gate_b007_0
+  - gate_r000_0
+  - gate_b004_0
+  - background_0
+  - button_next_0
+  m_RenderDataMap: {}
+  m_Tag: Gameplay2D_Atlas
+  m_IsVariant: 0

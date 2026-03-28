@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 using NATMP.Utilities.GamePlaySystem;
@@ -10,17 +10,13 @@ namespace NATMP.Utilities
     public class DataController : MonoBehaviour
     {
         [SerializeField] private PlayerDataJson _playerData = new();
-        [SerializeField] private AudioDataJson _audioData = new();
         private readonly Dictionary<Type , ISaveManager> _dataModules = new();
-        public AudioDataJson AudioDataJson => _audioData;
-        public PlayerDataJson PlayerDataJson => _playerData;
-        public TutorialDataJson TutorialDataJson => _playerData.TutorialData;
-        public CurrenciesData CurrenciesData => _playerData.CurrenciesData;
-        public PlayerTalentCardData PlayerTalentCardData => _playerData.TalentCardData;
+
+        public PlayerDataJson PlayerData => _playerData;
 
         public void Initialize()
         {
-            RegisterModule(_audioData);
+            _dataModules.Clear();
             RegisterModule(_playerData);
             LoadAll();
         }

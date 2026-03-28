@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a914672aec8fa124ab9eb8795b6f2c29
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 217400
+  packageName: Super Scroll Rect
+  packageVersion: 1.0
+  assetPath: Assets/GamesTan/SuperScrollRect/Examples/Prefabs/PrefabCell.prefab
+  uploadId: 490733

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: e37d53d8c19ade849ad735a5ce56e672
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 217400
+  packageName: Super Scroll Rect
+  packageVersion: 1.0
+  assetPath: Assets/GamesTan/SuperScrollRect/Examples/Scripts/DemoGrid.cs
+  uploadId: 490733
