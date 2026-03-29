@@ -61,9 +61,18 @@ namespace NATMP.Utilities.GamePlaySystem
             Save();
         }
 
+        /// <summary>Mọi stage giữ nguyên unlock/label; chỉ đưa <see cref="StageData.StarCount"/> về 0.</summary>
         public void ResetAllStages()
         {
-            InitializeRandomMapData();
+            if (_stages == null || _stages.Count != TotalStageCount)
+                return;
+
+            for (int i = 0; i < _stages.Count; i++)
+            {
+                var s = _stages[i];
+                _stages[i] = new StageData(s.StageIndex, s.IsUnlocked, 0, s.HasTutorialLabel);
+            }
+
             Save();
         }
 

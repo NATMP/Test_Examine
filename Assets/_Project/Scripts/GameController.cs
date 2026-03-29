@@ -9,4 +9,9 @@ public class GameController : PersistentSingleton<GameController>
 
     /// <summary>Stage 1-based chọn trên map trước khi load gameplay. -1 = chưa chọn.</summary>
     public int PendingGameplayStageIndex { get; set; } = -1;
+    override protected void Awake()
+    {
+        base.Awake();
+        Application.targetFrameRate = 60;
+    }
 }
