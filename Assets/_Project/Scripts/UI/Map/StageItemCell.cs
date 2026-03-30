@@ -4,12 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
-using GamesTan.UI;
-using NATMP;
 
 namespace NATMP.UI.Map
 {
-    public class StageItemCell : MonoBehaviour, IScrollCell
+    public class StageItemCell : MonoBehaviour
     {
         [Header("UI")]
         [SerializeField] private TextMeshProUGUI _stageIndexText;
@@ -25,6 +23,23 @@ namespace NATMP.UI.Map
         [SerializeField] private Sprite _lockedStageSprite;
 
         private Button _launchButton;
+
+        public void SetLineFlip(bool flipLineH, bool flipLineV)
+        {
+            // Flip by scale Y for UI stability.
+            FlipY(_imgLineH, flipLineH);
+            FlipY(_imgLineV, flipLineV);
+        }
+
+        private static void FlipY(Image img, bool flip)
+        {
+            if (img == null)
+                return;
+            var rt = img.rectTransform;
+            var s = rt.localScale;
+            s.y = flip ? -Mathf.Abs(s.y) : Mathf.Abs(s.y);
+            rt.localScale = s;
+        }
 
         public void SetEmpty()
         {
@@ -46,6 +61,7 @@ namespace NATMP.UI.Map
                 _imgLineV.gameObject.SetActive(false);
             if (_imgLineH != null)
                 _imgLineH.gameObject.SetActive(false);
+            SetLineFlip(false, false);
             if (_imgsStar != null)
             {
                 for (int i = 0; i < _imgsStar.Length; i++)
@@ -60,6 +76,8 @@ namespace NATMP.UI.Map
         {
             gameObject.SetActive(true);
             EnsureLaunchButton();
+            // Reset: pooled items may come from a flipped row.
+            SetLineFlip(false, false);
 
             if (_stageIndexText != null)
                 _stageIndexText.gameObject.SetActive(!stage.HasTutorialLabel);
